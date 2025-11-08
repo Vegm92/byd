@@ -126,8 +126,8 @@ const convertSpecToVehicle = (spec: VehicleSpec): Vehicle => {
   const id = generateId(spec);
   const carImage = getCarImage(id);
   const images = carImage || {
-    image: "/car-images/atto2-ev.png",
-    imageDetail: "/car-images/atto2-ev.png",
+    image: "/car-images/atto2-ev.webp",
+    imageDetail: "/car-images/atto2-ev.webp",
   };
 
   const systemPower = spec.powertrain.system_max_power_kw;

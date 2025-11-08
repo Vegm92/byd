@@ -1,23 +1,26 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import carGreen from "../assets/images/car-green.jpg";
+import carBlack from "../assets/images/car-black.jpg";
+import carWhite from "../assets/images/car-white.png";
 
 const VehicleShowcase = () => {
   const vehicles = [
     {
       name: "ATTO 2 Hiking Green",
-      image: "https://www.byd.com/content/dam/byd-site/eu/electric-cars/atto-2/xl/byd-atto2-exterior-04-green-xl.jpg",
+      image: carGreen,
       color: "Hiking Green",
       badge: "Popular"
     },
     {
       name: "ATTO 2 Luxury Black",
-      image: "https://www.byd.com/content/dam/byd-site/eu/electric-cars/atto-2/xl/byd-atto2-exterior-04-black-xl.jpg",
+      image: carBlack,
       color: "Premium Black",
       badge: "Premium"
     },
     {
       name: "ATTO 2 Sky White",
-      image: "https://byd.simemotors.my/media/wysiwyg/atto-2/car-sky-white.png",
+      image: carWhite,
       color: "Sky White",
       badge: "Classic"
     }

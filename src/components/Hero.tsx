@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import heroBg from "../assets/images/hero-bg.png";
 
 const Hero = () => {
   const scrollToGallery = () => {
@@ -11,7 +12,7 @@ const Hero = () => {
       <div 
         className="absolute inset-0 z-0 opacity-20"
         style={{
-          backgroundImage: 'url(https://cdn.abacus.ai/images/39b31350-21b7-4164-9184-8d2eb7fe6bd3.png)',
+          backgroundImage: `url(${heroBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
