@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* BYD Brand Colors - Primary */
+    --byd-red: #D70C19;
+    --byd-red-rgb: 215, 12, 25;
+    
+    /* BYD Brand Colors - Monochrome */
+    --byd-gray: #686D71;
+    --byd-gray-rgb: 111, 112, 111;
+    
+    /* BYD Brand Colors - Inverted */
+    --byd-white: #FFFFFF;
+    --byd-white-rgb: 255, 255, 255;
+    
+    /* BYD Brand Colors - Secondary & Applied */
+    --byd-blue: #5699D3;
+    --byd-blue-rgb: 86, 153, 211;
+    --byd-light-peach: #FAE9E3;
+    --byd-light-peach-rgb: 250, 233, 227;
+    --byd-very-light-blue: #F6F9FD;
+    --byd-very-light-blue-rgb: 246, 249, 253;
+    
+    /* Theme Variables (using BYD colors) */
+    --background: var(--byd-very-light-blue);
+    --foreground: 0 0% 10%;
+    --card: var(--byd-white);
+    --card-foreground: 0 0% 10%;
+    --popover: var(--byd-white);
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 92% 45%;
+    --primary-foreground: var(--byd-white);
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: var(--byd-very-light-blue);
+    --muted-foreground: var(--byd-gray);
+    --accent: var(--byd-light-peach);
+    --accent-foreground: 0 0% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 0 92% 45%;
+    --radius: 0.5rem;
+    
+    /* Logo clear space (1A recommended, 0.5A minimum) */
+    --logo-clear-space: 1rem;
+    --logo-min-height: 3rem; /* Minimum 3mm equivalent */
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 92% 45%;
+    --primary-foreground: var(--byd-white);
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 92% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Montserrat', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.container {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/* BYD Logo Rules */
+.byd-logo {
+  min-height: var(--logo-min-height);
+  padding: var(--logo-clear-space);
+}
+
+.byd-logo-container {
+  padding-left: calc(var(--logo-clear-space) * 3); /* 3A as per spec */
+}
+

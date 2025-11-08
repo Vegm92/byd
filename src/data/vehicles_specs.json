@@ -1,0 +1,1091 @@
+[
+  {
+    "make": "BYD",
+    "model": "Sealion 5",
+    "trim": "DM-i",
+    "model_year": "2024",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "PHEV",
+      "engine_displacement_l": 1.5,
+      "cylinders": 4,
+      "engine_max_power_kw": null,
+      "engine_max_torque_nm": null,
+      "motor_max_power_kw": 145,
+      "motor_max_torque_nm": 300,
+      "system_max_power_kw": 145,
+      "system_max_torque_nm": 300,
+      "drive": "FWD",
+      "transmission": "Automatic"
+    },
+    "battery_charging": {
+      "battery_type": "BYD Blade Battery (LFP)",
+      "battery_capacity_kwh": 12.96,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": null,
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": 71,
+       "wltp_combined_range_km": 1000,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": null,
+        "medium": null,
+        "high": null,
+        "combined": null,
+        "weighted_combined": null
+      },
+      "co2_g_km": null,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 8.3,
+      "top_speed_kmh": 170,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4738,
+      "width_mm": 1860,
+      "width_mirrors_mm": null,
+      "height_mm": 1710,
+      "wheelbase_mm": 2712,
+      "ground_clearance_mm": {
+        "unladen": 156,
+        "laden": null
+      },
+      "turning_circle_m": 5.8,
+      "front_track_mm": 1565,
+      "rear_track_mm": 1565
+    },
+    "weight_capacity": {
+      "kerb_kg": 1675,
+      "gross_vehicle_weight_kg": null,
+      "roof_load_kg": null,
+      "towing_braked_kg": null,
+      "towing_unbraked_kg": null,
+      "boot_volume_l": 520,
+      "boot_volume_seats_down_l": 1339,
+      "fuel_tank_l": 52,
+      "cargo_space_l_vda": 520
+    },
+    "chassis_brakes": {
+      "front_suspension": "MacPherson strut",
+      "rear_suspension": "Multi-link",
+      "brakes": "Ventilated discs front / solid discs rear"
+    },
+    "wheels_tyres": {
+      "wheel_size_in": 18,
+      "tyres": "225/60 R18"
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Data from BYD Sealion 5 DM-i specs; some fields unspecified.",
+    "sources": [
+      "344234338258864",
+      "148517476975781",
+      "891071407948675"
+    ]
+  },
+  {
+    "make": "BYD",
+    "model": "ATTO 2",
+    "trim": "DM-i",
+    "model_year": "2024",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "PHEV",
+      "engine_displacement_l": 1.5,
+      "cylinders": 4,
+      "engine_max_power_kw": 72,
+      "engine_max_torque_nm": null,
+      "motor_max_power_kw": 145,
+      "motor_max_torque_nm": 300,
+      "system_max_power_kw": 156,
+      "system_max_torque_nm": null,
+      "drive": "FWD",
+      "transmission": "Automatic"
+    },
+    "battery_charging": {
+      "battery_type": "BYD Blade Battery (LFP)",
+      "battery_capacity_kwh": {
+        "min": 7.8,
+        "max": 18.0
+      },
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": 3.3,
+      "max_ac_kw": 6.6,
+      "max_dc_kw": null,
+      "ac_port": "Type 2",
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": {
+        "min": 40,
+        "max": 90
+      },
+       "wltp_combined_range_km": 1000,
+      "energy_consumption_kwh_per_100km": 15.7,
+      "fuel_consumption_l_per_100km": {
+        "low": 4.7,
+        "medium": 3.4,
+        "high": 4.3,
+        "combined": 4.9,
+        "weighted_combined": 2.0
+      },
+      "co2_g_km": null,
+      "emission_standard": "Euro 6e-bis"
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 7.5,
+      "top_speed_kmh": 180,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4330,
+      "width_mm": 1830,
+      "width_mirrors_mm": 2060,
+      "height_mm": 1675,
+      "wheelbase_mm": 2620,
+      "ground_clearance_mm": {
+        "unladen": 160,
+        "laden": 150
+      },
+      "turning_circle_m": 5.3,
+      "front_track_mm": 1580,
+      "rear_track_mm": 1570
+    },
+    "weight_capacity": {
+      "kerb_kg": {
+        "min": 1510,
+        "max": 1620
+      },
+      "gross_vehicle_weight_kg": 2110,
+      "roof_load_kg": 75,
+      "towing_braked_kg": 750,
+      "towing_unbraked_kg": 750,
+      "boot_volume_l": 425,
+      "boot_volume_seats_down_l": 1335,
+      "fuel_tank_l": 45,
+      "cargo_space_l_vda": null
+    },
+    "chassis_brakes": {
+      "front_suspension": "MacPherson strut",
+      "rear_suspension": "Torsion beam",
+      "brakes": "Front ventilated discs / Rear solid discs"
+    },
+    "wheels_tyres": {
+      "wheel_size_in": null,
+      "tyres": null
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Data from BYD ATTO 2 DM-i spec sheet; two trims with different battery sizes and system power.",
+    "sources": [
+      "ATTO 2 DM-i specs.pdf"
+    ]
+  },
+  {
+    "make": "BYD",
+    "model": "ATTO 2",
+    "trim": "EV",
+    "model_year": "2024",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "EV",
+      "engine_displacement_l": null,
+      "cylinders": null,
+      "engine_max_power_kw": null,
+      "engine_max_torque_nm": null,
+      "motor_max_power_kw": 130,
+      "motor_max_torque_nm": 290,
+      "system_max_power_kw": 130,
+      "system_max_torque_nm": 290,
+      "drive": "FWD",
+      "transmission": "Single-speed"
+    },
+    "battery_charging": {
+      "battery_type": "BYD Blade Battery (LFP)",
+      "battery_capacity_kwh": 51.13,
+      "usable_capacity_kwh": 45.12,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": 65,
+      "ac_port": "Type 2",
+      "dc_port": "CCS2",
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": 410,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": null,
+        "medium": null,
+        "high": null,
+        "combined": null,
+        "weighted_combined": null
+      },
+      "co2_g_km": 0,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 7.9,
+      "top_speed_kmh": 160,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4310,
+      "width_mm": 1830,
+      "width_mirrors_mm": 2060,
+      "height_mm": 1675,
+      "wheelbase_mm": 2620,
+      "ground_clearance_mm": {
+        "unladen": 165,
+        "laden": null
+      },
+      "turning_circle_m": null,
+      "front_track_mm": 1570,
+      "rear_track_mm": 1570
+    },
+    "weight_capacity": {
+      "kerb_kg": 1570,
+      "gross_vehicle_weight_kg": 1980,
+      "roof_load_kg": 50,
+      "towing_braked_kg": null,
+      "towing_unbraked_kg": 750,
+      "boot_volume_l": 400,
+      "boot_volume_seats_down_l": 1340,
+      "fuel_tank_l": null,
+      "cargo_space_l_vda": 400
+    },
+    "chassis_brakes": {
+      "front_suspension": "MacPherson strut",
+      "rear_suspension": "Torsion beam",
+      "brakes": "Front ventilated discs / Rear discs"
+    },
+    "wheels_tyres": {
+      "wheel_size_in": 17,
+      "tyres": "215/60 R17"
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Data from BYD ATTO 2 EV spec sheet and EVSpecifications; range and battery capacity correspond to specific variant.",
+    "sources": [
+      "138543000054178",
+      "314647747027330"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "ZS Hybrid+",
+    "trim": "Comfort",
+    "model_year": "2024",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "HEV",
+      "engine_displacement_l": 1.5,
+      "cylinders": 4,
+      "engine_max_power_kw": 75,
+      "engine_max_torque_nm": 128,
+      "motor_max_power_kw": null,
+      "motor_max_torque_nm": null,
+      "system_max_power_kw": 145,
+      "system_max_torque_nm": 465,
+      "drive": "FWD",
+      "transmission": "3-speed hybrid transmission"
+    },
+    "battery_charging": {
+      "battery_type": "Lithium-ion (Hybrid)",
+      "battery_capacity_kwh": 1.83,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": null,
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": null,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": null,
+        "medium": null,
+        "high": null,
+        "combined": 5.05,
+        "weighted_combined": null
+      },
+      "co2_g_km": 114,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 8.7,
+      "top_speed_kmh": 168,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4430,
+      "width_mm": 1818,
+      "width_mirrors_mm": null,
+      "height_mm": 1635,
+      "wheelbase_mm": 2610,
+      "ground_clearance_mm": {
+        "unladen": 161,
+        "laden": 140
+      },
+      "turning_circle_m": null,
+      "front_track_mm": null,
+      "rear_track_mm": null
+    },
+    "weight_capacity": {
+      "kerb_kg": {
+        "min": 1380,
+        "max": 1420
+      },
+      "gross_vehicle_weight_kg": {
+        "min": 1830,
+        "max": 1890
+      },
+      "roof_load_kg": 75,
+      "towing_braked_kg": 500,
+      "towing_unbraked_kg": null,
+      "boot_volume_l": 443,
+      "boot_volume_seats_down_l": 1457,
+      "fuel_tank_l": 41,
+      "cargo_space_l_vda": 443
+    },
+    "chassis_brakes": {
+      "front_suspension": "MacPherson strut",
+      "rear_suspension": "Torsion beam",
+      "brakes": "Front & rear disc brakes"
+    },
+    "wheels_tyres": {
+      "wheel_size_in": {
+        "min": 16,
+        "max": 18
+      },
+      "tyres": "215/60 R16, 215/55 R17, 215/50 R18"
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Specs from MG ZS Hybrid+ brochure; weighted values approximated.",
+    "sources": [
+      "387091562882349"
+    ]
+  },
+  {
+    "make": "Peugeot",
+    "model": "2008 Hybrid",
+    "trim": "GT/Allure Hybrid",
+    "model_year": "2025",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "HEV",
+      "engine_displacement_l": 1.199,
+      "cylinders": 3,
+      "engine_max_power_kw": 100,
+      "engine_max_torque_nm": 230,
+      "motor_max_power_kw": 15.6,
+      "motor_max_torque_nm": 51,
+      "system_max_power_kw": 107,
+      "system_max_torque_nm": null,
+      "drive": "FWD",
+      "transmission": "6-speed Dual Clutch System"
+    },
+    "battery_charging": {
+      "battery_type": "Lithium-ion",
+      "battery_capacity_kwh": 0.876,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": null,
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": null,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": 4.7,
+        "medium": 3.8,
+        "high": null,
+        "combined": 4.4,
+        "weighted_combined": null
+      },
+      "co2_g_km": 99,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 8.3,
+      "top_speed_kmh": 206,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4300,
+      "width_mm": 1815,
+      "width_mirrors_mm": 1987,
+      "height_mm": 1550,
+      "wheelbase_mm": 2605,
+      "ground_clearance_mm": {
+        "unladen": null,
+        "laden": null
+      },
+      "turning_circle_m": null,
+      "front_track_mm": null,
+      "rear_track_mm": null
+    },
+    "weight_capacity": {
+      "kerb_kg": 1272,
+      "gross_vehicle_weight_kg": 1790,
+      "roof_load_kg": null,
+      "towing_braked_kg": 1100,
+      "towing_unbraked_kg": 685,
+      "boot_volume_l": 434,
+      "boot_volume_seats_down_l": 1467,
+      "fuel_tank_l": 44,
+      "cargo_space_l_vda": 434
+    },
+    "chassis_brakes": {
+      "front_suspension": "Pseudo MacPherson",
+      "rear_suspension": "De-formable crossmember",
+      "brakes": null
+    },
+    "wheels_tyres": {
+      "wheel_size_in": {
+        "Allure": 17,
+        "GT": 18
+      },
+      "tyres": "215/60 R17 or 215/55 R18"
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Technical specifications from Peugeot Australia MY25 hybrid spec sheet.",
+    "sources": [
+      "12196084016024"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "T-Roc",
+    "trim": "1.5 TSI 150 DSG",
+    "model_year": "2022",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "ICE",
+      "engine_displacement_l": 1.5,
+      "cylinders": 4,
+      "engine_max_power_kw": 110,
+      "engine_max_torque_nm": 250,
+      "motor_max_power_kw": null,
+      "motor_max_torque_nm": null,
+      "system_max_power_kw": 110,
+      "system_max_torque_nm": 250,
+      "drive": "FWD",
+      "transmission": "7-speed DSG"
+    },
+    "battery_charging": {
+      "battery_type": null,
+      "battery_capacity_kwh": null,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": null,
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": null,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": 5.3,
+        "medium": null,
+        "high": null,
+        "combined": 6.3,
+        "weighted_combined": null
+      },
+      "co2_g_km": 142,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 8.6,
+      "top_speed_kmh": 205,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4236,
+      "width_mm": 1819,
+      "width_mirrors_mm": 2012,
+      "height_mm": 1584,
+      "wheelbase_mm": 2590,
+      "ground_clearance_mm": {
+        "unladen": 161,
+        "laden": null
+      },
+      "turning_circle_m": 11.1,
+      "front_track_mm": 1549,
+      "rear_track_mm": 1541
+    },
+    "weight_capacity": {
+      "kerb_kg": 1278,
+      "gross_vehicle_weight_kg": 1860,
+      "roof_load_kg": 75,
+      "towing_braked_kg": 1700,
+      "towing_unbraked_kg": 670,
+      "boot_volume_l": 445,
+      "boot_volume_seats_down_l": 1290,
+      "fuel_tank_l": 50,
+      "cargo_space_l_vda": 445
+    },
+    "chassis_brakes": {
+      "front_suspension": "MacPherson strut",
+      "rear_suspension": "Semi-independent beam",
+      "brakes": "Front and rear disc brakes"
+    },
+    "wheels_tyres": {
+      "wheel_size_in": {
+        "min": 16,
+        "max": 18
+      },
+      "tyres": "205/60 R16 up to 215/55 R18"
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Specs from auto-data and other sources for VW T-Roc 1.5 TSI.",
+    "sources": [
+      "61340721743940"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Tiguan",
+    "trim": "1.5 eTSI R-Line",
+    "model_year": "2024",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "MHEV",
+      "engine_displacement_l": 1.5,
+      "cylinders": 4,
+      "engine_max_power_kw": 110,
+      "engine_max_torque_nm": 250,
+      "motor_max_power_kw": null,
+      "motor_max_torque_nm": null,
+      "system_max_power_kw": 110,
+      "system_max_torque_nm": null,
+      "drive": "FWD",
+      "transmission": "7-speed DSG"
+    },
+    "battery_charging": {
+      "battery_type": "48V mild hybrid",
+      "battery_capacity_kwh": null,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": null,
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": null,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": null,
+        "medium": null,
+        "high": null,
+        "combined": 6.3,
+        "weighted_combined": null
+      },
+      "co2_g_km": 143,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 9.1,
+      "top_speed_kmh": 210,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4539,
+      "width_mm": 1859,
+      "width_mirrors_mm": null,
+      "height_mm": 1660,
+      "wheelbase_mm": 2676,
+      "ground_clearance_mm": {
+        "unladen": null,
+        "laden": null
+      },
+      "turning_circle_m": null,
+      "front_track_mm": 1590,
+      "rear_track_mm": 1582
+    },
+    "weight_capacity": {
+      "kerb_kg": 1616,
+      "gross_vehicle_weight_kg": 2120,
+      "roof_load_kg": 100,
+      "towing_braked_kg": 2000,
+      "towing_unbraked_kg": 750,
+      "boot_volume_l": 652,
+      "boot_volume_seats_down_l": 1650,
+      "fuel_tank_l": 55,
+      "cargo_space_l_vda": 652
+    },
+    "chassis_brakes": {
+      "front_suspension": null,
+      "rear_suspension": null,
+      "brakes": null
+    },
+    "wheels_tyres": {
+      "wheel_size_in": null,
+      "tyres": null
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Data from auto-data for VW Tiguan 1.5 eTSI mild hybrid.",
+    "sources": [
+      "129976774440663"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "HS PHEV",
+    "trim": "Luxury",
+    "model_year": "2024",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "PHEV",
+      "engine_displacement_l": 1.49,
+      "cylinders": 4,
+      "engine_max_power_kw": 119,
+      "engine_max_torque_nm": 250,
+      "motor_max_power_kw": 90,
+      "motor_max_torque_nm": 230,
+      "system_max_power_kw": 209,
+      "system_max_torque_nm": 480,
+      "drive": "FWD",
+      "transmission": "10-speed EDU II"
+    },
+    "battery_charging": {
+      "battery_type": "Lithium-ion",
+      "battery_capacity_kwh": 16.6,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": null,
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": 67,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": null,
+        "medium": null,
+        "high": null,
+        "combined": null,
+        "weighted_combined": null
+      },
+      "co2_g_km": null,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": null,
+      "top_speed_kmh": null,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4574,
+      "width_mm": 1876,
+      "width_mirrors_mm": null,
+      "height_mm": 1664,
+      "wheelbase_mm": 2720,
+      "ground_clearance_mm": {
+        "unladen": 145,
+        "laden": null
+      },
+      "turning_circle_m": 5.95,
+      "front_track_mm": 1574,
+      "rear_track_mm": 1593
+    },
+    "weight_capacity": {
+      "kerb_kg": 1775,
+      "gross_vehicle_weight_kg": null,
+      "roof_load_kg": null,
+      "towing_braked_kg": 1500,
+      "towing_unbraked_kg": null,
+      "boot_volume_l": 507,
+      "boot_volume_seats_down_l": 1484,
+      "fuel_tank_l": 37,
+      "cargo_space_l_vda": 507
+    },
+    "chassis_brakes": {
+      "front_suspension": "MacPherson strut",
+      "rear_suspension": "Independent multi-link",
+      "brakes": "Ventilated disc front & disc rear"
+    },
+    "wheels_tyres": {
+      "wheel_size_in": 18,
+      "tyres": "235/50 R18"
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Specs from MG HS PHEV specification sheet (Thailand).",
+    "sources": [
+      "25933948034338"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Tucson N Line",
+    "trim": "Hybrid/PHEV",
+    "model_year": "2025",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "HEV",
+      "engine_displacement_l": 1.598,
+      "cylinders": 4,
+      "engine_max_power_kw": 169.2,
+      "engine_max_torque_nm": 350,
+      "motor_max_power_kw": 44,
+      "motor_max_torque_nm": 265,
+      "system_max_power_kw": 169.2,
+      "system_max_torque_nm": 350,
+      "drive": "AWD",
+      "transmission": "6-speed automatic"
+    },
+    "battery_charging": {
+      "battery_type": "Lithium-ion polymer",
+      "battery_capacity_kwh": 1.49,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": "Type 2",
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": 62,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": 17.7,
+      "fuel_consumption_l_per_100km": {
+        "low": 5.9,
+        "medium": 4.8,
+        "high": 4.9,
+        "combined": 5.8,
+        "weighted_combined": 1.4
+      },
+      "co2_g_km": 31,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 8.0,
+      "top_speed_kmh": 193,
+      "drag_coefficient_cd": null
+    },
+    "dimensions": {
+      "length_mm": 4500,
+      "width_mm": 1865,
+      "width_mirrors_mm": null,
+      "height_mm": 1653,
+      "wheelbase_mm": 2680,
+      "ground_clearance_mm": {
+        "unladen": null,
+        "laden": null
+      },
+      "turning_circle_m": null,
+      "front_track_mm": null,
+      "rear_track_mm": null
+    },
+    "weight_capacity": {
+      "kerb_kg": {
+        "min": 1564,
+        "max": 1685
+      },
+      "gross_vehicle_weight_kg": 2175,
+      "roof_load_kg": 100,
+      "towing_braked_kg": 1650,
+      "towing_unbraked_kg": 750,
+      "boot_volume_l": 616,
+      "boot_volume_seats_down_l": 1795,
+      "fuel_tank_l": 52,
+      "cargo_space_l_vda": 616
+    },
+    "chassis_brakes": {
+      "front_suspension": null,
+      "rear_suspension": null,
+      "brakes": null
+    },
+    "wheels_tyres": {
+      "wheel_size_in": null,
+      "tyres": null
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Data from Hyundai Tucson N Line technical data for hybrid and PHEV; some numbers may correspond to PHEV variant.",
+    "sources": [
+      "87654432851853"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "RAV4",
+    "trim": "Lounge Hybrid",
+    "model_year": "2025",
+    "body_style": "SUV",
+    "powertrain": {
+      "propulsion": "HEV",
+      "engine_displacement_l": 2.487,
+      "cylinders": 4,
+      "engine_max_power_kw": 131,
+      "engine_max_torque_nm": 221,
+      "motor_max_power_kw": 88,
+      "motor_max_torque_nm": 202,
+      "system_max_power_kw": 160,
+      "system_max_torque_nm": null,
+      "drive": "FWD",
+      "transmission": "CVT"
+    },
+    "battery_charging": {
+      "battery_type": "Nickel-metal hydride",
+      "battery_capacity_kwh": null,
+      "usable_capacity_kwh": null,
+      "onboard_charger_ac_kw": null,
+      "max_ac_kw": null,
+      "max_dc_kw": null,
+      "ac_port": null,
+      "dc_port": null,
+      "ac_time_15_100_h": null,
+      "dc_time_10_80_min": null,
+      "bi_directional": {
+        "v2l": null,
+        "v2h": null,
+        "v2g": null
+      }
+    },
+    "range_efficiency": {
+      "wltp_electric_range_km": null,
+      "wltp_combined_range_km": null,
+      "energy_consumption_kwh_per_100km": null,
+      "fuel_consumption_l_per_100km": {
+        "low": null,
+        "medium": null,
+        "high": null,
+        "combined": 5.0,
+        "weighted_combined": null
+      },
+      "co2_g_km": 128,
+      "emission_standard": null
+    },
+    "performance": {
+      "zero_to_100_kmh_s": 8.4,
+      "top_speed_kmh": 180,
+      "drag_coefficient_cd": 0.32
+    },
+    "dimensions": {
+      "length_mm": 4600,
+      "width_mm": 1855,
+      "width_mirrors_mm": null,
+      "height_mm": 1685,
+      "wheelbase_mm": 2690,
+      "ground_clearance_mm": {
+        "unladen": 195,
+        "laden": null
+      },
+      "turning_circle_m": null,
+      "front_track_mm": 1610,
+      "rear_track_mm": 1640
+    },
+    "weight_capacity": {
+      "kerb_kg": {
+        "min": 1590,
+        "max": 1730
+      },
+      "gross_vehicle_weight_kg": {
+        "min": 2135,
+        "max": 2225
+      },
+      "roof_load_kg": null,
+      "towing_braked_kg": {
+        "min": 800,
+        "max": 1650
+      },
+      "towing_unbraked_kg": 750,
+      "boot_volume_l": 580,
+      "boot_volume_seats_down_l": 1690,
+      "fuel_tank_l": 55,
+      "cargo_space_l_vda": 580
+    },
+    "chassis_brakes": {
+      "front_suspension": null,
+      "rear_suspension": null,
+      "brakes": null
+    },
+    "wheels_tyres": {
+      "wheel_size_in": null,
+      "tyres": null
+    },
+    "features": {
+      "exterior": [],
+      "interior": [],
+      "infotainment": [],
+      "safety": [],
+      "adas": []
+    },
+    "colours": {
+      "exterior": [],
+      "interior": []
+    },
+    "notes": "Data from Toyota RAV4 technical specifications for hybrid variant; some values approximate.",
+    "sources": [
+      "20346813473959"
+    ]
+  }
+]
