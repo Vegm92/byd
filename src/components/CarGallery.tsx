@@ -14,7 +14,7 @@ const CarGallery = () => {
   const smallVehicleIds = [
     'byd-atto-2-dmi',
     'byd-atto-2-ev',
-    'toyota-rav4-hybrid', // Yaris
+    'toyota-yaris', // Yaris Cross
     'vw-troc', // T-Roc
     'peugeot-2008-hybrid', // Peugeot 2008
     'mg-hs-phev' // MG HS
@@ -22,6 +22,7 @@ const CarGallery = () => {
 
   const bigVehicleIds = [
     'byd-sealion-5-dmi',
+    'toyota-rav4-hybrid', // RAV4
     'vw-tiguan',
     'hyundai-tucson-nline',
     'mg-zs-hybrid'

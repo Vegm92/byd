@@ -1,15 +1,24 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getVehicleById } from "@/data/vehicles";
 import vehicleSpecsData from "@/data/vehicles_specs.json";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, CheckCircle } from "lucide-react";
+import { ArrowLeft, ExternalLink, CheckCircle, Download } from "lucide-react";
 import { getCarImage } from "@/data/carImages";
+import bydLogo from "@/assets/images/byd-logo.svg";
+import { pdfLinks } from "@/data/pdfLinks";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import QRCode from "qrcode";
 
 const VehicleDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const specsRef = useRef<HTMLDivElement>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const [pdfBlobUrl, setPdfBlobUrl] = useState<string>('');
+  const [shareLink, setShareLink] = useState<string>('');
   const vehicle = getVehicleById(id || "");
 
   // Use local car images from imageMappings for consistency
@@ -51,9 +60,12 @@ const VehicleDetail = () => {
       (spec.make === "Hyundai" &&
         spec.model === "Tucson N Line" &&
         id === "hyundai-tucson-nline") ||
-      (spec.make === "Toyota" &&
-        spec.model === "RAV4" &&
-        id === "toyota-rav4-hybrid")
+       (spec.make === "Toyota" &&
+         spec.model === "RAV4" &&
+         id === "toyota-rav4-hybrid") ||
+       (spec.make === "Toyota" &&
+         spec.model === "Yaris Cross Hybrid 130 e-CVT" &&
+         id === "toyota-yaris")
     );
   });
 
@@ -64,6 +76,70 @@ const VehicleDetail = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+
+
+  useEffect(() => {
+    if (!vehicle || !detailedSpec || !specsRef.current) return;
+
+    const generatePdfAndQr = async () => {
+      const header = specsRef.current!.querySelector('.pdf-header') as HTMLElement;
+      if (header) {
+        header.style.display = 'block';
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      const canvas = await html2canvas(specsRef.current!, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      });
+
+      if (header) {
+        header.style.display = 'none';
+      }
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const pdfBlob = pdf.output('blob');
+      const blobUrl = URL.createObjectURL(pdfBlob);
+      setPdfBlobUrl(blobUrl);
+
+      // Generate QR from pdfLinks if available, else blob
+      const qrLink = pdfLinks[id!] || blobUrl;
+      const qrDataUrl = await QRCode.toDataURL(qrLink, { width: 128 });
+      setQrCodeUrl(qrDataUrl);
+    };
+
+    generatePdfAndQr();
+  }, [vehicle, detailedSpec, id]);
+
+  const downloadPDF = () => {
+    if (!pdfBlobUrl || !vehicle) return;
+
+    const link = document.createElement('a');
+    link.href = pdfBlobUrl;
+    link.download = `${vehicle.name.replace(/\s+/g, '_')}_Spec_Sheet.pdf`;
+    link.click();
+  };
 
   if (!vehicle) {
     return (
@@ -181,533 +257,890 @@ const VehicleDetail = () => {
                 >
                   Key Features
                 </h3>
-                <div className="space-y-3">
-                  {vehicle.features.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <CheckCircle
-                        className="w-5 h-5 flex-shrink-0 mt-0.5"
-                        style={{
-                          color: isByd ? "var(--byd-red)" : "var(--byd-blue)",
-                        }}
-                      />
-                      <span
-                        className="text-sm font-medium"
-                        style={{
-                          fontFamily: "Montserrat",
-                          color: "#1a1a1a",
-                        }}
-                      >
-                        {feature}
-                      </span>
-                    </div>
-                  ))}
+                 <div className="space-y-3">
+                   {vehicle.specs.range && (
+                     <div className="flex items-start gap-3">
+                       <CheckCircle
+                         className="w-5 h-5 flex-shrink-0 mt-0.5"
+                         style={{
+                           color: isByd ? "var(--byd-red)" : "var(--byd-blue)",
+                         }}
+                       />
+                       <span
+                         className="text-sm font-medium"
+                         style={{
+                           fontFamily: "Montserrat",
+                           color: "#1a1a1a",
+                         }}
+                       >
+                         Autonomy: {vehicle.specs.range}
+                       </span>
+                     </div>
+                   )}
+                   {detailedSpec?.powertrain.transmission && (
+                     <div className="flex items-start gap-3">
+                       <CheckCircle
+                         className="w-5 h-5 flex-shrink-0 mt-0.5"
+                         style={{
+                           color: isByd ? "var(--byd-red)" : "var(--byd-blue)",
+                         }}
+                       />
+                       <span
+                         className="text-sm font-medium"
+                         style={{
+                           fontFamily: "Montserrat",
+                           color: "#1a1a1a",
+                         }}
+                       >
+                         Transmission: {detailedSpec.powertrain.transmission}
+                       </span>
+                     </div>
+                   )}
+                   {vehicle.features.map((feature, index) => (
+                     <div key={index} className="flex items-start gap-3">
+                       <CheckCircle
+                         className="w-5 h-5 flex-shrink-0 mt-0.5"
+                         style={{
+                           color: isByd ? "var(--byd-red)" : "var(--byd-blue)",
+                         }}
+                       />
+                       <span
+                         className="text-sm font-medium"
+                         style={{
+                           fontFamily: "Montserrat",
+                           color: "#1a1a1a",
+                         }}
+                       >
+                         {feature}
+                       </span>
+                     </div>
+                   ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Specifications Section - Professional Layout */}
-          {detailedSpec && (
-            <div className="mb-16">
-              <h2
-                className="text-3xl font-bold uppercase mb-8 text-center tracking-wide"
-                style={{
-                  fontFamily: "Montserrat",
-                  letterSpacing: "0.05em",
-                  color: "#1a1a1a",
-                }}
-              >
-                Technical Specifications
-              </h2>
+          {/* Specifications Section - Sales Training Layout */}
+           {detailedSpec && (
+             <div ref={specsRef} className="mb-16">
+               {/* PDF Header with Branding and Car Image */}
+               <div className="pdf-header text-center mb-8 bg-gradient-to-r from-[var(--byd-very-light-blue)] to-white p-6 rounded-lg" style={{ display: 'none' }}>
+                 <img
+                   src={bydLogo}
+                   alt="BYD Logo"
+                   className="h-20 w-auto mx-auto mb-4"
+                 />
+                 <h1
+                   className="text-3xl font-bold uppercase mb-2 tracking-wide"
+                   style={{
+                     fontFamily: "Montserrat",
+                     letterSpacing: "0.05em",
+                     color: "var(--byd-red)",
+                   }}
+                 >
+                   BYD Sales Training Spec Sheet
+                 </h1>
+                 <h2
+                   className="text-2xl font-semibold uppercase tracking-wide mb-4"
+                   style={{
+                     fontFamily: "Montserrat",
+                     letterSpacing: "0.05em",
+                     color: "#1a1a1a",
+                   }}
+                 >
+                   {vehicle.name}
+                 </h2>
+                 <img
+                   src={imageUrl}
+                   alt={vehicle.name}
+                   className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
+                 />
+               </div>
 
-              {/* Specs Grid - Professional Table-like Layout */}
-              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                {/* Powertrain Section */}
-                <div className="border-b border-gray-200">
-                  <div
-                    className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
-                    style={{ fontFamily: "Montserrat" }}
-                  >
-                    <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
-                      Powertrain
-                    </h3>
-                  </div>
-                  <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                    <div className="px-6 py-4">
-                      <div className="flex justify-between items-center">
-                        <span
-                          className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                          style={{ fontFamily: "Montserrat" }}
-                        >
-                          Propulsion
-                        </span>
-                        <span
-                          className="text-base font-semibold text-foreground"
-                          style={{ fontFamily: "Montserrat" }}
-                        >
-                          {detailedSpec.powertrain.propulsion}
-                        </span>
-                      </div>
-                    </div>
-                    {detailedSpec.powertrain.system_max_power_kw && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            System Power
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {formatValue(
-                              detailedSpec.powertrain.system_max_power_kw
-                            )}{" "}
-                            kW
-                            {detailedSpec.powertrain.system_max_power_kw &&
-                              ` (${Math.round(
-                                detailedSpec.powertrain.system_max_power_kw *
-                                  1.34102
-                              )} HP)`}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {detailedSpec.powertrain.motor_max_power_kw && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Motor Power
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {formatValue(
-                              detailedSpec.powertrain.motor_max_power_kw
-                            )}{" "}
-                            kW
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {detailedSpec.powertrain.drive && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Drive
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {detailedSpec.powertrain.drive}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {detailedSpec.powertrain.transmission && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Transmission
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {detailedSpec.powertrain.transmission}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+               <h2
+                 className="text-3xl font-bold uppercase mb-8 text-center tracking-wide"
+                 style={{
+                   fontFamily: "Montserrat",
+                   letterSpacing: "0.05em",
+                   color: "#1a1a1a",
+                 }}
+               >
+                 Technical Specifications
+               </h2>
 
-                {/* Battery & Charging Section */}
-                {detailedSpec.battery_charging.battery_type && (
-                  <div className="border-b border-gray-200">
-                    <div
-                      className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
-                      style={{ fontFamily: "Montserrat" }}
-                    >
-                      <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
-                        Battery & Charging
-                      </h3>
-                    </div>
-                    <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Battery Type
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground text-right max-w-[60%]"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {detailedSpec.battery_charging.battery_type}
-                          </span>
-                        </div>
-                      </div>
-                      {detailedSpec.battery_charging.battery_capacity_kwh && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              Battery Capacity
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(
-                                detailedSpec.battery_charging
-                                  .battery_capacity_kwh
-                              )}{" "}
-                              kWh
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {detailedSpec.battery_charging.max_ac_kw && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              AC Charging
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(
-                                detailedSpec.battery_charging.max_ac_kw
-                              )}{" "}
-                              kW
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {detailedSpec.battery_charging.max_dc_kw && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              DC Charging
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(
-                                detailedSpec.battery_charging.max_dc_kw
-                              )}{" "}
-                              kW
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+               {/* Specs Grid - Sales-Focused Layout */}
+               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                 {/* General Vehicle Info Section */}
+                 <div className="border-b border-gray-200">
+                   <div
+                     className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
+                     style={{ fontFamily: "Montserrat" }}
+                   >
+                     <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                       General Vehicle Info
+                     </h3>
+                   </div>
+                   <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                     <div className="px-6 py-4">
+                       <div className="flex justify-between items-center">
+                         <span
+                           className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           Model Name
+                         </span>
+                         <span
+                           className="text-base font-semibold text-foreground"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           {detailedSpec.make} {detailedSpec.model}
+                         </span>
+                       </div>
+                     </div>
+                     <div className="px-6 py-4">
+                       <div className="flex justify-between items-center">
+                         <span
+                           className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           Model Year
+                         </span>
+                         <span
+                           className="text-base font-semibold text-foreground"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           {detailedSpec.model_year}
+                         </span>
+                       </div>
+                     </div>
+                     <div className="px-6 py-4">
+                       <div className="flex justify-between items-center">
+                         <span
+                           className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           Trim/Edition
+                         </span>
+                         <span
+                           className="text-base font-semibold text-foreground"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           {detailedSpec.trim}
+                         </span>
+                       </div>
+                     </div>
+                     <div className="px-6 py-4">
+                       <div className="flex justify-between items-center">
+                         <span
+                           className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           Body Style
+                         </span>
+                         <span
+                           className="text-base font-semibold text-foreground"
+                           style={{ fontFamily: "Montserrat" }}
+                         >
+                           {detailedSpec.body_style}
+                         </span>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
 
-                {/* Range & Efficiency Section */}
-                <div className="border-b border-gray-200">
-                  <div
-                    className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
-                    style={{ fontFamily: "Montserrat" }}
-                  >
-                    <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
-                      Range & Efficiency
-                    </h3>
-                  </div>
-                  <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                    {detailedSpec.range_efficiency.wltp_electric_range_km && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Electric Range (WLTP)
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {formatValue(
-                              detailedSpec.range_efficiency
-                                .wltp_electric_range_km
-                            )}{" "}
-                            km
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {detailedSpec.range_efficiency.wltp_combined_range_km && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Combined Range (WLTP)
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {formatValue(
-                              detailedSpec.range_efficiency
-                                .wltp_combined_range_km
-                            )}{" "}
-                            km
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {detailedSpec.range_efficiency.fuel_consumption_l_per_100km
-                      ?.combined && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Fuel Consumption
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {formatValue(
-                              detailedSpec.range_efficiency
-                                .fuel_consumption_l_per_100km.combined
-                            )}{" "}
-                            L/100km
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {detailedSpec.range_efficiency.co2_g_km !== null &&
-                      detailedSpec.range_efficiency.co2_g_km !== undefined && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              CO₂ Emissions
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(
-                                detailedSpec.range_efficiency.co2_g_km
-                              )}{" "}
-                              g/km
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                </div>
+                 {/* Powertrain & Performance Section */}
+                 <div className="border-b border-gray-200">
+                   <div
+                     className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
+                     style={{ fontFamily: "Montserrat" }}
+                   >
+                     <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                       Powertrain & Performance
+                     </h3>
+                   </div>
+                   <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                     {detailedSpec.powertrain.engine_displacement_l && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Engine Displacement
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.powertrain.engine_displacement_l)} L
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.powertrain.cylinders && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Engine Configuration
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {detailedSpec.powertrain.cylinders} cylinders
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.powertrain.motor_max_power_kw && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Motor Power
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.powertrain.motor_max_power_kw)} kW
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.powertrain.system_max_power_kw && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Total Power Output
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.powertrain.system_max_power_kw)} kW ({Math.round(detailedSpec.powertrain.system_max_power_kw * 1.34102)} HP)
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.powertrain.system_max_torque_nm && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Torque
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.powertrain.system_max_torque_nm)} Nm
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.powertrain.transmission && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Transmission Type
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {detailedSpec.powertrain.transmission}
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.performance.zero_to_100_kmh_s && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Acceleration (0-100 km/h)
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.performance.zero_to_100_kmh_s)} s
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.performance.top_speed_kmh && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Top Speed
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.performance.top_speed_kmh)} km/h
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+                 </div>
 
-                {/* Performance Section */}
-                <div className="border-b border-gray-200">
-                  <div
-                    className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
-                    style={{ fontFamily: "Montserrat" }}
-                  >
-                    <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
-                      Performance
-                    </h3>
-                  </div>
-                  <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                    {detailedSpec.performance.zero_to_100_kmh_s && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            0-100 km/h
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {formatValue(
-                              detailedSpec.performance.zero_to_100_kmh_s
-                            )}{" "}
-                            s
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {detailedSpec.performance.top_speed_kmh && (
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between items-center">
-                          <span
-                            className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            Top Speed
-                          </span>
-                          <span
-                            className="text-base font-semibold text-foreground"
-                            style={{ fontFamily: "Montserrat" }}
-                          >
-                            {formatValue(
-                              detailedSpec.performance.top_speed_kmh
-                            )}{" "}
-                            km/h
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                 {/* Fuel & Emissions Section */}
+                 <div className="border-b border-gray-200">
+                   <div
+                     className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
+                     style={{ fontFamily: "Montserrat" }}
+                   >
+                     <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                       Fuel & Emissions
+                     </h3>
+                   </div>
+                   <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                     {detailedSpec.weight_capacity.fuel_tank_l && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Fuel Tank Capacity
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.weight_capacity.fuel_tank_l)} L
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.range_efficiency.fuel_consumption_l_per_100km?.combined && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             WLTP Fuel Economy
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.range_efficiency.fuel_consumption_l_per_100km.combined)} L/100km
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.range_efficiency.co2_g_km !== null && detailedSpec.range_efficiency.co2_g_km !== undefined && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             CO₂ Emissions
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.range_efficiency.co2_g_km)} g/km
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.battery_charging.battery_capacity_kwh && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Hybrid Battery Capacity
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {formatValue(detailedSpec.battery_charging.battery_capacity_kwh)} kWh
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                     {detailedSpec.battery_charging.battery_type && (
+                       <div className="px-6 py-4">
+                         <div className="flex justify-between items-center">
+                           <span
+                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             Battery Type
+                           </span>
+                           <span
+                             className="text-base font-semibold text-foreground text-right max-w-[60%]"
+                             style={{ fontFamily: "Montserrat" }}
+                           >
+                             {detailedSpec.battery_charging.battery_type}
+                           </span>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+                 </div>
 
-                {/* Dimensions Section */}
-                {detailedSpec.dimensions && (
-                  <div className="border-b border-gray-200">
-                    <div
-                      className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
-                      style={{ fontFamily: "Montserrat" }}
-                    >
-                      <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
-                        Dimensions
-                      </h3>
-                    </div>
-                    <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                      {detailedSpec.dimensions.length_mm && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              Length
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(detailedSpec.dimensions.length_mm)}{" "}
-                              mm
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {detailedSpec.dimensions.width_mm && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              Width
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(detailedSpec.dimensions.width_mm)} mm
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {detailedSpec.dimensions.height_mm && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              Height
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(detailedSpec.dimensions.height_mm)}{" "}
-                              mm
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {detailedSpec.dimensions.wheelbase_mm && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              Wheelbase
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(
-                                detailedSpec.dimensions.wheelbase_mm
-                              )}{" "}
-                              mm
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {detailedSpec.weight_capacity.boot_volume_l && (
-                        <div className="px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              Boot Volume
-                            </span>
-                            <span
-                              className="text-base font-semibold text-foreground"
-                              style={{ fontFamily: "Montserrat" }}
-                            >
-                              {formatValue(
-                                detailedSpec.weight_capacity.boot_volume_l
-                              )}{" "}
-                              L
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+                 {/* Dimensions & Capacity Section */}
+                 {detailedSpec.dimensions && (
+                   <div className="border-b border-gray-200">
+                     <div
+                       className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
+                       style={{ fontFamily: "Montserrat" }}
+                     >
+                       <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                         Dimensions & Capacity
+                       </h3>
+                     </div>
+                     <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                       {detailedSpec.dimensions.length_mm && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Length
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.dimensions.length_mm)} mm
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.dimensions.width_mm && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Width
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.dimensions.width_mm)} mm
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.dimensions.height_mm && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Height
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.dimensions.height_mm)} mm
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.dimensions.wheelbase_mm && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Wheelbase
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.dimensions.wheelbase_mm)} mm
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.dimensions.ground_clearance_mm?.unladen && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Ground Clearance
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.dimensions.ground_clearance_mm.unladen)} mm
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.weight_capacity.boot_volume_l && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Boot/Trunk Volume
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.weight_capacity.boot_volume_l)} L
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.weight_capacity.boot_volume_seats_down_l && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Boot Volume (Seats Down)
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.weight_capacity.boot_volume_seats_down_l)} L
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.weight_capacity.kerb_kg && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Kerb Weight
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.weight_capacity.kerb_kg)} kg
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.weight_capacity.gross_vehicle_weight_kg && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Gross Vehicle Weight
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.weight_capacity.gross_vehicle_weight_kg)} kg
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.weight_capacity.towing_braked_kg && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Towing Capacity (Braked)
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.weight_capacity.towing_braked_kg)} kg
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.weight_capacity.towing_unbraked_kg && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Towing Capacity (Unbraked)
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.weight_capacity.towing_unbraked_kg)} kg
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                     </div>
+                   </div>
+                 )}
 
-          {/* Official BYD Website CTA */}
+                 {/* Chassis & Suspension Section */}
+                 {detailedSpec.chassis_brakes && (
+                   <div className="border-b border-gray-200">
+                     <div
+                       className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
+                       style={{ fontFamily: "Montserrat" }}
+                     >
+                       <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                         Chassis & Suspension
+                       </h3>
+                     </div>
+                     <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                       {detailedSpec.chassis_brakes.front_suspension && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Front Suspension
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {detailedSpec.chassis_brakes.front_suspension}
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.chassis_brakes.rear_suspension && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Rear Suspension
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {detailedSpec.chassis_brakes.rear_suspension}
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.chassis_brakes.brakes && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Brake System
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {detailedSpec.chassis_brakes.brakes}
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.wheels_tyres.wheel_size_in && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Wheel Size
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {formatValue(detailedSpec.wheels_tyres.wheel_size_in)} inches
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                       {detailedSpec.wheels_tyres.tyres && (
+                         <div className="px-6 py-4">
+                           <div className="flex justify-between items-center">
+                             <span
+                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               Tyre Size
+                             </span>
+                             <span
+                               className="text-base font-semibold text-foreground"
+                               style={{ fontFamily: "Montserrat" }}
+                             >
+                               {detailedSpec.wheels_tyres.tyres}
+                             </span>
+                           </div>
+                         </div>
+                       )}
+                     </div>
+                   </div>
+                 )}
+
+                 {/* Features & Options Section */}
+                 {(detailedSpec.features.exterior.length > 0 ||
+                   detailedSpec.features.interior.length > 0 ||
+                   detailedSpec.features.infotainment.length > 0 ||
+                   detailedSpec.features.safety.length > 0 ||
+                   detailedSpec.features.adas.length > 0) && (
+                   <div className="border-b border-gray-200">
+                     <div
+                       className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
+                       style={{ fontFamily: "Montserrat" }}
+                     >
+                       <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                         Features & Options
+                       </h3>
+                     </div>
+                     <div className="px-6 py-4">
+                       {detailedSpec.features.infotainment.length > 0 && (
+                         <div className="mb-4">
+                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                             Infotainment System
+                           </h4>
+                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                             {detailedSpec.features.infotainment.map((feature, index) => (
+                               <li key={index}>{feature}</li>
+                             ))}
+                           </ul>
+                         </div>
+                       )}
+                       {detailedSpec.features.safety.length > 0 && (
+                         <div className="mb-4">
+                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                             Safety Features
+                           </h4>
+                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                             {detailedSpec.features.safety.map((feature, index) => (
+                               <li key={index}>{feature}</li>
+                             ))}
+                           </ul>
+                         </div>
+                       )}
+                       {detailedSpec.features.adas.length > 0 && (
+                         <div className="mb-4">
+                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                             Driver Assistance Systems
+                           </h4>
+                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                             {detailedSpec.features.adas.map((feature, index) => (
+                               <li key={index}>{feature}</li>
+                             ))}
+                           </ul>
+                         </div>
+                       )}
+                       {detailedSpec.features.exterior.length > 0 && (
+                         <div className="mb-4">
+                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                             Exterior Features
+                           </h4>
+                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                             {detailedSpec.features.exterior.map((feature, index) => (
+                               <li key={index}>{feature}</li>
+                             ))}
+                           </ul>
+                         </div>
+                       )}
+                       {detailedSpec.features.interior.length > 0 && (
+                         <div className="mb-4">
+                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                             Interior & Comfort
+                           </h4>
+                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                             {detailedSpec.features.interior.map((feature, index) => (
+                               <li key={index}>{feature}</li>
+                             ))}
+                           </ul>
+                         </div>
+                       )}
+                     </div>
+                   </div>
+                 )}
+
+
+               </div>
+             </div>
+           )}
+
+           {/* Download PDF Button */}
+           {detailedSpec && (
+             <div className="mb-16 text-center flex items-center justify-center gap-6">
+               <Button
+                 onClick={downloadPDF}
+                 size="lg"
+                 className="px-8 py-6 text-lg font-semibold uppercase tracking-wide"
+                 style={{
+                   backgroundColor: "var(--byd-blue)",
+                   color: "white",
+                   fontFamily: "Montserrat",
+                 }}
+               >
+                 <Download className="w-5 h-5 mr-2" />
+                 Download Spec Sheet PDF
+               </Button>
+               {qrCodeUrl && (
+                 <div className="text-center">
+                   <p className="text-sm text-gray-600 mb-2">Scan to Download PDF</p>
+                   <img src={qrCodeUrl} alt="QR Code for PDF Download" className="w-24 h-24 border border-gray-300 rounded" />
+                 </div>
+               )}
+             </div>
+           )}
+
+           {/* Official BYD Website CTA */}
           {isByd && vehicle.officialUrl && (
             <div className="text-center">
               <a

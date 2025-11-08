@@ -117,6 +117,8 @@ const generateId = (spec: VehicleSpec): string => {
     return "hyundai-tucson-nline";
   if (spec.make === "Toyota" && spec.model === "RAV4")
     return "toyota-rav4-hybrid";
+  if (spec.make === "Toyota" && spec.model === "Yaris Cross Hybrid 130 e-CVT")
+    return "toyota-yaris";
 
   return `${make}-${model}-${trim}`;
 };
