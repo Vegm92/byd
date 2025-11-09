@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { vehicles } from "@/data/vehicles";
 import { pdfLinks } from "@/data/pdfLinks";
-import QRCode from "qrcode";
+// QRCode will be dynamically imported
 
 const Index = () => {
   const [showQr, setShowQr] = useState(false);
@@ -24,6 +24,9 @@ const Index = () => {
   }, []);
 
   const generateQrCodes = async () => {
+    // Dynamically import QRCode only when needed
+    const { default: QRCode } = await import('qrcode');
+
     const codes: Record<string, string> = {};
     for (const vehicle of vehicles) {
       const link = pdfLinks[vehicle.id];
@@ -45,7 +48,7 @@ const Index = () => {
       <Hero />
       <CarGallery />
 
-      {/* Bulk QR Section */}
+      {/* Bulk QR Section - Commented out
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <Button
@@ -78,6 +81,7 @@ const Index = () => {
           </div>
         )}
       </div>
+      */}
 
       <Footer />
     </div>

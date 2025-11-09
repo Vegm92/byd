@@ -1,0 +1,600 @@
+{
+  "schema_version": "1.1-simple",
+  "market_region": "EU-ES",
+  "vehicles": [
+    {
+      "id": "byd_sealion 5_2024",
+      "brand": "BYD",
+      "model": "Sealion 5",
+      "model_year": "2024",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 145,
+        "transmission": "Automatic",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 8.3,
+        "top_speed_kmh": 170
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": 71,
+        "co2_g_km": null
+      },
+      "dimensions": {
+        "length_mm": 4738,
+        "width_mm": 1860,
+        "height_mm": 1710,
+        "wheelbase_mm": 2712,
+        "ground_clearance_mm": 156,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": 5.8
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "byd_atto 2_2024",
+      "brand": "BYD",
+      "model": "ATTO 2",
+      "model_year": "2024",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 156,
+        "transmission": "Automatic",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 7.5,
+        "top_speed_kmh": 180
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": 40.0,
+        "co2_g_km": null
+      },
+      "dimensions": {
+        "length_mm": 4330,
+        "width_mm": 1830,
+        "height_mm": 1675,
+        "wheelbase_mm": 2620,
+        "ground_clearance_mm": 160,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": 5.3
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "byd_atto 2_2024",
+      "brand": "BYD",
+      "model": "ATTO 2",
+      "model_year": "2024",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 130,
+        "transmission": "Single-speed",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 7.9,
+        "top_speed_kmh": 160
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": 410,
+        "co2_g_km": 0
+      },
+      "dimensions": {
+        "length_mm": 4310,
+        "width_mm": 1830,
+        "height_mm": 1675,
+        "wheelbase_mm": 2620,
+        "ground_clearance_mm": 165,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": null
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "mg_zs hybrid+_2024",
+      "brand": "MG",
+      "model": "ZS Hybrid+",
+      "model_year": "2024",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 145,
+        "transmission": "3-speed hybrid transmission",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 8.7,
+        "top_speed_kmh": 168
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": null,
+        "co2_g_km": 114
+      },
+      "dimensions": {
+        "length_mm": 4430,
+        "width_mm": 1818,
+        "height_mm": 1635,
+        "wheelbase_mm": 2610,
+        "ground_clearance_mm": 161,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": null
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "peugeot_2008 hybrid_2025",
+      "brand": "Peugeot",
+      "model": "2008 Hybrid",
+      "model_year": "2025",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 107,
+        "transmission": "6-speed Dual Clutch System",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 8.3,
+        "top_speed_kmh": 206
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": null,
+        "co2_g_km": 99
+      },
+      "dimensions": {
+        "length_mm": 4300,
+        "width_mm": 1815,
+        "height_mm": 1550,
+        "wheelbase_mm": 2605,
+        "ground_clearance_mm": null,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": null
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "volkswagen_t-roc_2022",
+      "brand": "Volkswagen",
+      "model": "T-Roc",
+      "model_year": "2022",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 110,
+        "transmission": "7-speed DSG",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 8.6,
+        "top_speed_kmh": 205
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": null,
+        "co2_g_km": 142
+      },
+      "dimensions": {
+        "length_mm": 4236,
+        "width_mm": 1819,
+        "height_mm": 1584,
+        "wheelbase_mm": 2590,
+        "ground_clearance_mm": 161,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": 11.1
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "volkswagen_tiguan_2024",
+      "brand": "Volkswagen",
+      "model": "Tiguan",
+      "model_year": "2024",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 110,
+        "transmission": "7-speed DSG",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 9.1,
+        "top_speed_kmh": 210
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": null,
+        "co2_g_km": 143
+      },
+      "dimensions": {
+        "length_mm": 4539,
+        "width_mm": 1859,
+        "height_mm": 1660,
+        "wheelbase_mm": 2676,
+        "ground_clearance_mm": null,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": null
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "mg_hs phev_2024",
+      "brand": "MG",
+      "model": "HS PHEV",
+      "model_year": "2024",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 209,
+        "transmission": "10-speed EDU II",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": null,
+        "top_speed_kmh": null
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": 67,
+        "co2_g_km": null
+      },
+      "dimensions": {
+        "length_mm": 4574,
+        "width_mm": 1876,
+        "height_mm": 1664,
+        "wheelbase_mm": 2720,
+        "ground_clearance_mm": 145,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": 5.95
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "hyundai_tucson n line_2025",
+      "brand": "Hyundai",
+      "model": "Tucson N Line",
+      "model_year": "2025",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 169.2,
+        "transmission": "6-speed automatic",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 8.0,
+        "top_speed_kmh": 193
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": 62,
+        "co2_g_km": 31
+      },
+      "dimensions": {
+        "length_mm": 4500,
+        "width_mm": 1865,
+        "height_mm": 1653,
+        "wheelbase_mm": 2680,
+        "ground_clearance_mm": null,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": null
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "toyota_rav4_2025",
+      "brand": "Toyota",
+      "model": "RAV4",
+      "model_year": "2025",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 160,
+        "transmission": "CVT",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 8.4,
+        "top_speed_kmh": 180
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": null,
+        "co2_g_km": 128
+      },
+      "dimensions": {
+        "length_mm": 4600,
+        "width_mm": 1855,
+        "height_mm": 1685,
+        "wheelbase_mm": 2690,
+        "ground_clearance_mm": 195,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": null
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "toyota_yaris cross hybrid 130 e-cvt_2025",
+      "brand": "Toyota",
+      "model": "Yaris Cross Hybrid 130 e-CVT",
+      "model_year": "2025",
+      "trims": [],
+      "powertrain": {
+        "type": "ICE",
+        "summary": "—",
+        "system_power_kw": 85,
+        "transmission": "e-CVT",
+        "drive": "FWD",
+        "battery_kwh": null
+      },
+      "performance": {
+        "zero_to_100_kmh_s": 10.7,
+        "top_speed_kmh": 170
+      },
+      "economy": {
+        "fuel_type": null,
+        "fuel_tank_l": null,
+        "wltp_combined_l_100km": null,
+        "ev_range_km": null,
+        "co2_g_km": 112
+      },
+      "dimensions": {
+        "length_mm": 4180,
+        "width_mm": 1765,
+        "height_mm": 1595,
+        "wheelbase_mm": 2560,
+        "ground_clearance_mm": 170,
+        "boot_up_l": null,
+        "boot_down_l": null,
+        "kerb_kg": null,
+        "gvw_kg": null,
+        "towing_braked_kg": null,
+        "towing_unbraked_kg": null,
+        "turning_circle_m": 5.3
+      },
+      "chassis": {
+        "suspension": null,
+        "brakes": null,
+        "wheels_tyres": null
+      },
+      "key_features": [],
+      "selling_points": [],
+      "warranty_years": null,
+      "service_interval_months": null,
+      "insurance_group": null,
+      "source": {
+        "name": "",
+        "url": ""
+      }
+    }
+  ]
+}

@@ -4,21 +4,19 @@ import { getVehicleById } from "@/data/vehicles";
 import vehicleSpecsData from "@/data/vehicles_specs.json";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, CheckCircle, Download } from "lucide-react";
+import { ArrowLeft, ExternalLink, CheckCircle } from "lucide-react";
 import { getCarImage } from "@/data/carImages";
 import bydLogo from "@/assets/images/byd-logo.svg";
 import { pdfLinks } from "@/data/pdfLinks";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import QRCode from "qrcode";
+import { generateVehiclePdf } from "@/utils/pdfGenerator";
 
 const VehicleDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const specsRef = useRef<HTMLDivElement>(null);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
-  const [pdfBlobUrl, setPdfBlobUrl] = useState<string>('');
   const [shareLink, setShareLink] = useState<string>('');
+  const [showQr, setShowQr] = useState<boolean>(false);
   const vehicle = getVehicleById(id || "");
 
   // Use local car images from imageMappings for consistency
@@ -83,63 +81,20 @@ const VehicleDetail = () => {
     if (!vehicle || !detailedSpec || !specsRef.current) return;
 
     const generatePdfAndQr = async () => {
-      const header = specsRef.current!.querySelector('.pdf-header') as HTMLElement;
-      if (header) {
-        header.style.display = 'block';
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-
-      const canvas = await html2canvas(specsRef.current!, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
+      const result = await generateVehiclePdf({
+        vehicle,
+        specsElement: specsRef.current!,
+        pdfLinks,
+        vehicleId: id
       });
 
-      if (header) {
-        header.style.display = 'none';
-      }
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-
-      let position = 0;
-
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
-      const pdfBlob = pdf.output('blob');
-      const blobUrl = URL.createObjectURL(pdfBlob);
-      setPdfBlobUrl(blobUrl);
-
-      // Generate QR from pdfLinks if available, else blob
-      const qrLink = pdfLinks[id!] || blobUrl;
-      const qrDataUrl = await QRCode.toDataURL(qrLink, { width: 128 });
-      setQrCodeUrl(qrDataUrl);
+      setQrCodeUrl(result.qrCodeUrl);
     };
 
     generatePdfAndQr();
   }, [vehicle, detailedSpec, id]);
 
-  const downloadPDF = () => {
-    if (!pdfBlobUrl || !vehicle) return;
 
-    const link = document.createElement('a');
-    link.href = pdfBlobUrl;
-    link.download = `${vehicle.name.replace(/\s+/g, '_')}_Spec_Sheet.pdf`;
-    link.click();
-  };
 
   if (!vehicle) {
     return (
@@ -193,7 +148,7 @@ const VehicleDetail = () => {
         <div className="max-w-7xl mx-auto">
           {/* Compact Header Section */}
           <div className="mb-8">
-            <div className="flex items-end gap-4 mb-2">
+            <div className="flex items-end justify-between gap-4 mb-2">
               <div>
                 <Badge
                   className="px-3 py-1 text-xs font-semibold uppercase tracking-wider inline-block"
@@ -208,27 +163,52 @@ const VehicleDetail = () => {
                   {vehicle.type}
                 </Badge>
               </div>
+              {/* QR Code and Button */}
+              {detailedSpec && qrCodeUrl && (
+                <div className="flex items-end gap-2">
+                  {showQr && (
+                    <div className="flex-shrink-0 flex items-center gap-2">
+                      <p className="text-xs text-gray-600 whitespace-nowrap">Scan to Download PDF</p>
+                      <img src={qrCodeUrl} alt="QR Code for PDF Download" className="w-12 h-12 border border-gray-300 rounded flex-shrink-0" />
+                    </div>
+                  )}
+                  <Button
+                    onClick={() => setShowQr(!showQr)}
+                    size="sm"
+                    className="px-3 py-2 text-sm font-semibold uppercase tracking-wide flex-shrink-0"
+                    style={{
+                      backgroundColor: isByd ? "var(--byd-red)" : "var(--byd-blue)",
+                      color: "white",
+                      fontFamily: "Montserrat",
+                    }}
+                  >
+                    {showQr ? "Hide" : "Show"} QR
+                  </Button>
+                </div>
+              )}
             </div>
-            <h1
-              className="text-3xl md:text-4xl font-bold uppercase mb-1 tracking-tight"
-              style={{
-                fontFamily: "Montserrat",
-                letterSpacing: "0.02em",
-                color: "#1a1a1a",
-              }}
-            >
-              {vehicle.brand}
-            </h1>
-            <p
-              className="text-lg md:text-xl font-normal uppercase tracking-wide"
-              style={{
-                fontFamily: "Montserrat",
-                letterSpacing: "0.05em",
-                color: "var(--byd-gray)",
-              }}
-            >
-              {vehicle.model}
-            </p>
+            <div>
+              <h1
+                className="text-3xl md:text-4xl font-bold uppercase mb-1 tracking-tight"
+                style={{
+                  fontFamily: "Montserrat",
+                  letterSpacing: "0.02em",
+                  color: "#1a1a1a",
+                }}
+              >
+                {vehicle.brand}
+              </h1>
+              <p
+                className="text-lg md:text-xl font-normal uppercase tracking-wide"
+                style={{
+                  fontFamily: "Montserrat",
+                  letterSpacing: "0.05em",
+                  color: "var(--byd-gray)",
+                }}
+              >
+                {vehicle.model}
+              </p>
+            </div>
           </div>
 
           {/* Image & Features Side-by-Side Section */}
@@ -315,58 +295,64 @@ const VehicleDetail = () => {
                        </span>
                      </div>
                    ))}
-                </div>
-              </div>
-            )}
-          </div>
+                 </div>
+               </div>
+             )}
+           </div>
 
           {/* Specifications Section - Sales Training Layout */}
            {detailedSpec && (
              <div ref={specsRef} className="mb-16">
-               {/* PDF Header with Branding and Car Image */}
-               <div className="pdf-header text-center mb-8 bg-gradient-to-r from-[var(--byd-very-light-blue)] to-white p-6 rounded-lg" style={{ display: 'none' }}>
-                 <img
-                   src={bydLogo}
-                   alt="BYD Logo"
-                   className="h-20 w-auto mx-auto mb-4"
-                 />
-                 <h1
-                   className="text-3xl font-bold uppercase mb-2 tracking-wide"
-                   style={{
-                     fontFamily: "Montserrat",
-                     letterSpacing: "0.05em",
-                     color: "var(--byd-red)",
-                   }}
-                 >
-                   BYD Sales Training Spec Sheet
-                 </h1>
-                 <h2
-                   className="text-2xl font-semibold uppercase tracking-wide mb-4"
-                   style={{
-                     fontFamily: "Montserrat",
-                     letterSpacing: "0.05em",
-                     color: "#1a1a1a",
-                   }}
-                 >
-                   {vehicle.name}
-                 </h2>
-                 <img
-                   src={imageUrl}
-                   alt={vehicle.name}
-                   className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
-                 />
-               </div>
+                {/* PDF Header - Reusing site header style */}
+                <div className="pdf-header w-full border-b bg-white/95" style={{ display: 'none' }}>
+                  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex h-16 items-center justify-between">
+                      {/* Logo - Left */}
+                      <div className="flex items-center">
+                        <img
+                          src={bydLogo}
+                          alt="BYD Auto Logo"
+                          className="h-8 md:h-10 w-auto"
+                        />
+                      </div>
 
-               <h2
-                 className="text-3xl font-bold uppercase mb-8 text-center tracking-wide"
-                 style={{
-                   fontFamily: "Montserrat",
-                   letterSpacing: "0.05em",
-                   color: "#1a1a1a",
-                 }}
-               >
-                 Technical Specifications
-               </h2>
+                      {/* Title - Right */}
+                      <div className="text-right">
+                        <h1
+                          className="text-lg font-bold uppercase tracking-wide"
+                          style={{
+                            fontFamily: "Montserrat",
+                            letterSpacing: "0.05em",
+                            color: "var(--byd-red)",
+                          }}
+                        >
+                          BYD Sales Training Spec Sheet
+                        </h1>
+                        <h2
+                          className="text-sm font-semibold uppercase tracking-wide"
+                          style={{
+                            fontFamily: "Montserrat",
+                            letterSpacing: "0.05em",
+                            color: "#1a1a1a",
+                          }}
+                        >
+                          {vehicle.name}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h2
+                  className="text-2xl sm:text-3xl font-bold uppercase mb-8 text-center tracking-wide"
+                  style={{
+                    fontFamily: "Montserrat",
+                    letterSpacing: "0.05em",
+                    color: "#1a1a1a",
+                  }}
+                >
+                  Technical Specifications
+                </h2>
 
                {/* Specs Grid - Sales-Focused Layout */}
                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -383,32 +369,32 @@ const VehicleDetail = () => {
                    <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
                      <div className="px-6 py-4">
                        <div className="flex justify-between items-center">
-                         <span
-                           className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                           style={{ fontFamily: "Montserrat" }}
-                         >
-                           Model Name
-                         </span>
-                         <span
-                           className="text-base font-semibold text-foreground"
-                           style={{ fontFamily: "Montserrat" }}
-                         >
+                          <span
+                            className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                            style={{ fontFamily: "Montserrat" }}
+                          >
+                            Model Name
+                          </span>
+                          <span
+                            className="text-sm sm:text-base font-semibold text-foreground"
+                            style={{ fontFamily: "Montserrat" }}
+                          >
                            {detailedSpec.make} {detailedSpec.model}
                          </span>
                        </div>
                      </div>
                      <div className="px-6 py-4">
                        <div className="flex justify-between items-center">
-                         <span
-                           className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
-                           style={{ fontFamily: "Montserrat" }}
-                         >
-                           Model Year
-                         </span>
-                         <span
-                           className="text-base font-semibold text-foreground"
-                           style={{ fontFamily: "Montserrat" }}
-                         >
+                          <span
+                            className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                            style={{ fontFamily: "Montserrat" }}
+                          >
+                            Model Year
+                          </span>
+                          <span
+                            className="text-sm sm:text-base font-semibold text-foreground"
+                            style={{ fontFamily: "Montserrat" }}
+                          >
                            {detailedSpec.model_year}
                          </span>
                        </div>
@@ -463,13 +449,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Engine Displacement
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.powertrain.engine_displacement_l)} L
@@ -481,13 +467,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Engine Configuration
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {detailedSpec.powertrain.cylinders} cylinders
@@ -499,13 +485,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Motor Power
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.powertrain.motor_max_power_kw)} kW
@@ -517,13 +503,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Total Power Output
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.powertrain.system_max_power_kw)} kW ({Math.round(detailedSpec.powertrain.system_max_power_kw * 1.34102)} HP)
@@ -535,13 +521,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Torque
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.powertrain.system_max_torque_nm)} Nm
@@ -553,13 +539,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Transmission Type
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {detailedSpec.powertrain.transmission}
@@ -571,13 +557,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Acceleration (0-100 km/h)
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.performance.zero_to_100_kmh_s)} s
@@ -589,13 +575,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Top Speed
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.performance.top_speed_kmh)} km/h
@@ -621,13 +607,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Fuel Tank Capacity
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.weight_capacity.fuel_tank_l)} L
@@ -639,13 +625,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              WLTP Fuel Economy
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.range_efficiency.fuel_consumption_l_per_100km.combined)} L/100km
@@ -657,13 +643,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              CO₂ Emissions
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.range_efficiency.co2_g_km)} g/km
@@ -675,13 +661,13 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Hybrid Battery Capacity
                            </span>
                            <span
-                             className="text-base font-semibold text-foreground"
+                             className="text-sm sm:text-base font-semibold text-foreground"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              {formatValue(detailedSpec.battery_charging.battery_capacity_kwh)} kWh
@@ -693,7 +679,7 @@ const VehicleDetail = () => {
                        <div className="px-6 py-4">
                          <div className="flex justify-between items-center">
                            <span
-                             className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                             className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                              style={{ fontFamily: "Montserrat" }}
                            >
                              Battery Type
@@ -717,7 +703,7 @@ const VehicleDetail = () => {
                        className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
                        style={{ fontFamily: "Montserrat" }}
                      >
-                       <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                       <h3 className="text-base sm:text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
                          Dimensions & Capacity
                        </h3>
                      </div>
@@ -726,13 +712,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Length
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.dimensions.length_mm)} mm
@@ -744,13 +730,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Width
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.dimensions.width_mm)} mm
@@ -762,13 +748,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Height
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.dimensions.height_mm)} mm
@@ -780,13 +766,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Wheelbase
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.dimensions.wheelbase_mm)} mm
@@ -798,13 +784,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Ground Clearance
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.dimensions.ground_clearance_mm.unladen)} mm
@@ -816,13 +802,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Boot/Trunk Volume
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.weight_capacity.boot_volume_l)} L
@@ -834,13 +820,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Boot Volume (Seats Down)
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.weight_capacity.boot_volume_seats_down_l)} L
@@ -852,13 +838,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Kerb Weight
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.weight_capacity.kerb_kg)} kg
@@ -870,13 +856,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Gross Vehicle Weight
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.weight_capacity.gross_vehicle_weight_kg)} kg
@@ -888,13 +874,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Towing Capacity (Braked)
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.weight_capacity.towing_braked_kg)} kg
@@ -906,13 +892,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Towing Capacity (Unbraked)
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.weight_capacity.towing_unbraked_kg)} kg
@@ -931,7 +917,7 @@ const VehicleDetail = () => {
                        className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
                        style={{ fontFamily: "Montserrat" }}
                      >
-                       <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                       <h3 className="text-base sm:text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
                          Chassis & Suspension
                        </h3>
                      </div>
@@ -940,13 +926,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Front Suspension
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {detailedSpec.chassis_brakes.front_suspension}
@@ -958,13 +944,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Rear Suspension
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {detailedSpec.chassis_brakes.rear_suspension}
@@ -976,13 +962,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Brake System
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {detailedSpec.chassis_brakes.brakes}
@@ -994,13 +980,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Wheel Size
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {formatValue(detailedSpec.wheels_tyres.wheel_size_in)} inches
@@ -1012,13 +998,13 @@ const VehicleDetail = () => {
                          <div className="px-6 py-4">
                            <div className="flex justify-between items-center">
                              <span
-                               className="text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
+                               className="text-xs sm:text-sm font-medium text-[var(--byd-gray)] uppercase tracking-wide"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                Tyre Size
                              </span>
                              <span
-                               className="text-base font-semibold text-foreground"
+                               className="text-sm sm:text-base font-semibold text-foreground"
                                style={{ fontFamily: "Montserrat" }}
                              >
                                {detailedSpec.wheels_tyres.tyres}
@@ -1041,17 +1027,17 @@ const VehicleDetail = () => {
                        className="bg-[var(--byd-very-light-blue)] px-6 py-4 border-b border-gray-200"
                        style={{ fontFamily: "Montserrat" }}
                      >
-                       <h3 className="text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
+                       <h3 className="text-base sm:text-lg font-bold uppercase tracking-wide text-[var(--byd-gray)]">
                          Features & Options
                        </h3>
                      </div>
                      <div className="px-6 py-4">
                        {detailedSpec.features.infotainment.length > 0 && (
                          <div className="mb-4">
-                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
                              Infotainment System
                            </h4>
-                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                            <ul className="list-disc list-inside text-xs sm:text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
                              {detailedSpec.features.infotainment.map((feature, index) => (
                                <li key={index}>{feature}</li>
                              ))}
@@ -1060,10 +1046,10 @@ const VehicleDetail = () => {
                        )}
                        {detailedSpec.features.safety.length > 0 && (
                          <div className="mb-4">
-                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
                              Safety Features
                            </h4>
-                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                            <ul className="list-disc list-inside text-xs sm:text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
                              {detailedSpec.features.safety.map((feature, index) => (
                                <li key={index}>{feature}</li>
                              ))}
@@ -1072,10 +1058,10 @@ const VehicleDetail = () => {
                        )}
                        {detailedSpec.features.adas.length > 0 && (
                          <div className="mb-4">
-                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
                              Driver Assistance Systems
                            </h4>
-                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                            <ul className="list-disc list-inside text-xs sm:text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
                              {detailedSpec.features.adas.map((feature, index) => (
                                <li key={index}>{feature}</li>
                              ))}
@@ -1084,10 +1070,10 @@ const VehicleDetail = () => {
                        )}
                        {detailedSpec.features.exterior.length > 0 && (
                          <div className="mb-4">
-                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
                              Exterior Features
                            </h4>
-                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                            <ul className="list-disc list-inside text-xs sm:text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
                              {detailedSpec.features.exterior.map((feature, index) => (
                                <li key={index}>{feature}</li>
                              ))}
@@ -1096,10 +1082,10 @@ const VehicleDetail = () => {
                        )}
                        {detailedSpec.features.interior.length > 0 && (
                          <div className="mb-4">
-                           <h4 className="text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wide text-[var(--byd-gray)] mb-2" style={{ fontFamily: "Montserrat" }}>
                              Interior & Comfort
                            </h4>
-                           <ul className="list-disc list-inside text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
+                            <ul className="list-disc list-inside text-xs sm:text-sm text-foreground" style={{ fontFamily: "Montserrat" }}>
                              {detailedSpec.features.interior.map((feature, index) => (
                                <li key={index}>{feature}</li>
                              ))}
@@ -1113,34 +1099,9 @@ const VehicleDetail = () => {
 
                </div>
              </div>
-           )}
+            )}
 
-           {/* Download PDF Button */}
-           {detailedSpec && (
-             <div className="mb-16 text-center flex items-center justify-center gap-6">
-               <Button
-                 onClick={downloadPDF}
-                 size="lg"
-                 className="px-8 py-6 text-lg font-semibold uppercase tracking-wide"
-                 style={{
-                   backgroundColor: "var(--byd-blue)",
-                   color: "white",
-                   fontFamily: "Montserrat",
-                 }}
-               >
-                 <Download className="w-5 h-5 mr-2" />
-                 Download Spec Sheet PDF
-               </Button>
-               {qrCodeUrl && (
-                 <div className="text-center">
-                   <p className="text-sm text-gray-600 mb-2">Scan to Download PDF</p>
-                   <img src={qrCodeUrl} alt="QR Code for PDF Download" className="w-24 h-24 border border-gray-300 rounded" />
-                 </div>
-               )}
-             </div>
-           )}
-
-           {/* Official BYD Website CTA */}
+            {/* Official BYD Website CTA */}
           {isByd && vehicle.officialUrl && (
             <div className="text-center">
               <a

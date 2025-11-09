@@ -8,6 +8,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
+
   const menuItems = [
     { label: "Home", path: "/" },
     { label: "Vehicles", path: "/#vehicle-gallery" },
@@ -77,15 +78,27 @@ const Header = () => {
                   </button>
                 );
               } else {
-                return (
-                  <Link
-                    key={item.label}
-                    to={item.path}
-                    className="text-sm font-medium text-foreground hover:text-red-500 transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                );
+                if (item.label === "Presentation") {
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path}
+                      className="text-sm font-medium text-foreground hover:text-red-500 transition-colors opacity-5 hover:opacity-100"
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                } else {
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path}
+                      className="text-sm font-medium text-foreground hover:text-red-500 transition-colors"
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
               }
             })}
             {location.pathname !== "/presentation" && <ViewModeSelector />}
@@ -130,16 +143,29 @@ const Header = () => {
                   </button>
                 );
               } else {
-                return (
-                  <Link
-                    key={item.label}
-                    to={item.path}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-2 text-sm font-medium text-foreground hover:text-red-500 hover:bg-gray-100 transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                );
+                if (item.label === "Presentation") {
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-4 py-2 text-sm font-medium text-foreground hover:text-red-500 hover:bg-gray-100 transition-colors opacity-5 hover:opacity-100"
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                } else {
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-4 py-2 text-sm font-medium text-foreground hover:text-red-500 hover:bg-gray-100 transition-colors"
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
               }
             })}
             {location.pathname !== "/presentation" && (
