@@ -1,4 +1,4 @@
-const imageMap: Record<string, { image: string; imageDetail: string }> = {
+export const imageMap: Record<string, { image: string; imageDetail: string }> = {
   "byd-atto-2-dmi": {
     image:
       "/car-images/byd/17.ATTO 2 DMi_LHD_Midnight Blue_17 inch wheels_download_Left Front 45°_PNG.webp",
@@ -23,10 +23,10 @@ const imageMap: Record<string, { image: string; imageDetail: string }> = {
     imageDetail:
       "/car-images/competitors/Peugeot-2008-hibrido-nuevo-2024-1.webp",
   },
-  "vw-troc": {
-    image: "/car-images/competitors/volkswagen_T-roc.webp",
-    imageDetail: "/car-images/competitors/volkswagen_T-roc.webp",
-  },
+   "vw-troc": {
+     image: "/car-images/competitors/volkswagen_T-roc.webp",
+     imageDetail: "/car-images/competitors/volkswagen_T-roc.webp",
+   },
   "vw-tiguan": {
     image:
       "/car-images/competitors/volkswagen_25tiguanrlinesu3bfr_lowaggressive.webp",

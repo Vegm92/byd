@@ -1,5 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { FileText } from "lucide-react";
 import { getBydVehicles, getCompetitorVehicles } from "@/data/vehicles";
 import { useNavigate } from "react-router-dom";
 import { useViewMode } from "@/contexts/ViewModeContext";
@@ -29,7 +31,7 @@ const CarGallery = () => {
   ];
 
   // Filter and sort vehicles based on view mode
-  const getFilteredVehicles = (vehicles: any[], isByd: boolean) => {
+  const getFilteredVehicles = (vehicles: any[]) => {
     let filteredVehicles = vehicles;
 
     if (viewMode === 'small') {
@@ -49,8 +51,8 @@ const CarGallery = () => {
     return filteredVehicles;
   };
 
-  const bydVehicles = getFilteredVehicles(allBydVehicles, true);
-  const competitorVehicles = getFilteredVehicles(allCompetitorVehicles, false);
+  const bydVehicles = getFilteredVehicles(allBydVehicles);
+  const competitorVehicles = getFilteredVehicles(allCompetitorVehicles);
 
   const handleCarClick = (carId: string) => {
     // Save current scroll position before navigating
@@ -92,16 +94,24 @@ const CarGallery = () => {
                     </Badge>
                   </div>
                 </div>
-                <CardContent className="p-6 bg-white">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-xl text-foreground">{vehicle.brand}</h3>
-                    <Badge variant="outline" className="border-[var(--byd-gray)] text-[var(--byd-gray)]">{vehicle.specs.power}</Badge>
-                  </div>
-                  <p className="text-[var(--byd-gray)] font-medium mb-3">{vehicle.model}</p>
-                  <div className="flex items-center gap-4 text-sm text-[var(--byd-gray)]">
-                    <span>Range: {vehicle.specs.range}</span>
-                  </div>
-                </CardContent>
+                 <CardContent className="p-6 bg-white relative">
+                   <div className="flex items-center justify-between mb-2">
+                     <h3 className="font-bold text-xl text-foreground">{vehicle.brand}</h3>
+                     <Badge variant="outline" className="border-[var(--byd-gray)] text-[var(--byd-gray)]">{vehicle.specs.power}</Badge>
+                   </div>
+                   <p className="text-[var(--byd-gray)] font-medium mb-3">{vehicle.model}</p>
+                   <div className="flex items-center gap-4 text-sm text-[var(--byd-gray)]">
+                     <span>Range: {vehicle.specs.range}</span>
+                   </div>
+                   <Button
+                     size="sm"
+                     className="absolute bottom-4 right-4 bg-[var(--byd-red)] hover:bg-[var(--byd-red)]/90 text-white"
+                     onClick={() => handleCarClick(vehicle.id)}
+                   >
+                     <FileText className="w-4 h-4 mr-1" />
+                     View Details
+                   </Button>
+                 </CardContent>
               </Card>
             ))}
           </div>
@@ -138,10 +148,18 @@ const CarGallery = () => {
                     </Badge>
                   </div>
                 </div>
-                <CardContent className="p-4 bg-white">
-                  <h3 className="font-bold text-lg text-foreground">{vehicle.brand}</h3>
-                  <p className="text-sm text-[var(--byd-gray)]">{vehicle.name}</p>
-                </CardContent>
+                 <CardContent className="p-4 pb-12 bg-white relative">
+                   <h3 className="font-bold text-lg text-foreground">{vehicle.brand}</h3>
+                   <p className="text-sm text-[var(--byd-gray)]">{vehicle.name}</p>
+                   <Button
+                     size="sm"
+                     className="absolute bottom-2 right-2 bg-[var(--byd-blue)] hover:bg-[var(--byd-blue)]/90 text-white"
+                     onClick={() => handleCarClick(vehicle.id)}
+                   >
+                     <FileText className="w-4 h-4 mr-1" />
+                     View Details
+                   </Button>
+                 </CardContent>
               </Card>
             ))}
           </div>

@@ -15,8 +15,7 @@ const VehicleDetail = () => {
   const navigate = useNavigate();
   const specsRef = useRef<HTMLDivElement>(null);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
-  const [shareLink, setShareLink] = useState<string>('');
-  const [showQr, setShowQr] = useState<boolean>(false);
+  const [pdfBlobUrl, setPdfBlobUrl] = useState<string>('');
   const vehicle = getVehicleById(id || "");
 
   // Use local car images from imageMappings for consistency
@@ -49,7 +48,7 @@ const VehicleDetail = () => {
         spec.model === "2008 Hybrid" &&
         id === "peugeot-2008-hybrid") ||
       (spec.make === "Volkswagen" &&
-        spec.model === "T-Roc" &&
+        spec.model === "T-Roc II" &&
         id === "vw-troc") ||
       (spec.make === "Volkswagen" &&
         spec.model === "Tiguan" &&
@@ -89,10 +88,13 @@ const VehicleDetail = () => {
       });
 
       setQrCodeUrl(result.qrCodeUrl);
+      setPdfBlobUrl(result.pdfBlobUrl);
     };
 
     generatePdfAndQr();
   }, [vehicle, detailedSpec, id]);
+
+
 
 
 
@@ -146,69 +148,59 @@ const VehicleDetail = () => {
 
         {/* Main Content */}
         <div className="max-w-7xl mx-auto">
-          {/* Compact Header Section */}
-          <div className="mb-8">
-            <div className="flex items-end justify-between gap-4 mb-2">
-              <div>
-                <Badge
-                  className="px-3 py-1 text-xs font-semibold uppercase tracking-wider inline-block"
-                  style={{
-                    backgroundColor: isByd
-                      ? "var(--byd-red)"
-                      : "var(--byd-blue)",
-                    color: "white",
-                    fontFamily: "Montserrat",
-                  }}
-                >
-                  {vehicle.type}
-                </Badge>
-              </div>
-              {/* QR Code and Button */}
-              {detailedSpec && qrCodeUrl && (
-                <div className="flex items-end gap-2">
-                  {showQr && (
-                    <div className="flex-shrink-0 flex items-center gap-2">
-                      <p className="text-xs text-gray-600 whitespace-nowrap">Scan to Download PDF</p>
-                      <img src={qrCodeUrl} alt="QR Code for PDF Download" className="w-12 h-12 border border-gray-300 rounded flex-shrink-0" />
+           {/* Compact Header Section */}
+           <div className="mb-8">
+             <div className="flex items-end justify-between gap-4 mb-2">
+               <div>
+                 <Badge
+                   className="px-3 py-1 text-xs font-semibold uppercase tracking-wider inline-block"
+                   style={{
+                     backgroundColor: isByd
+                       ? "var(--byd-red)"
+                       : "var(--byd-blue)",
+                     color: "white",
+                     fontFamily: "Montserrat",
+                   }}
+                 >
+                   {vehicle.type}
+                 </Badge>
+               </div>
+             </div>
+             <div className="flex items-end justify-between gap-4">
+               <div>
+                 <h1
+                   className="text-3xl md:text-4xl font-bold uppercase mb-1 tracking-tight"
+                   style={{
+                     fontFamily: "Montserrat",
+                     letterSpacing: "0.02em",
+                     color: "#1a1a1a",
+                   }}
+                 >
+                   {vehicle.brand}
+                 </h1>
+                 <p
+                   className="text-lg md:text-xl font-normal uppercase tracking-wide"
+                   style={{
+                     fontFamily: "Montserrat",
+                     letterSpacing: "0.05em",
+                     color: "var(--byd-gray)",
+                   }}
+                 >
+                   {vehicle.model}
+                 </p>
+               </div>
+                {/* PDF Download Section */}
+                {detailedSpec && qrCodeUrl && (
+                  <div className="flex items-center">
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                      <div className="text-center">
+                        <p className="text-sm text-gray-600 mb-2 font-medium" style={{ fontFamily: "Montserrat" }}>Download Technical Sheet</p>
+                        <img src={qrCodeUrl} alt="QR Code for PDF Download" className="w-16 h-16 border border-gray-300 rounded mx-auto" />
+                      </div>
                     </div>
-                  )}
-                  <Button
-                    onClick={() => setShowQr(!showQr)}
-                    size="sm"
-                    className="px-3 py-2 text-sm font-semibold uppercase tracking-wide flex-shrink-0"
-                    style={{
-                      backgroundColor: isByd ? "var(--byd-red)" : "var(--byd-blue)",
-                      color: "white",
-                      fontFamily: "Montserrat",
-                    }}
-                  >
-                    {showQr ? "Hide" : "Show"} QR
-                  </Button>
-                </div>
-              )}
-            </div>
-            <div>
-              <h1
-                className="text-3xl md:text-4xl font-bold uppercase mb-1 tracking-tight"
-                style={{
-                  fontFamily: "Montserrat",
-                  letterSpacing: "0.02em",
-                  color: "#1a1a1a",
-                }}
-              >
-                {vehicle.brand}
-              </h1>
-              <p
-                className="text-lg md:text-xl font-normal uppercase tracking-wide"
-                style={{
-                  fontFamily: "Montserrat",
-                  letterSpacing: "0.05em",
-                  color: "var(--byd-gray)",
-                }}
-              >
-                {vehicle.model}
-              </p>
-            </div>
+                  </div>
+                )}
+             </div>
           </div>
 
           {/* Image & Features Side-by-Side Section */}

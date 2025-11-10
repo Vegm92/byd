@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Hero from "@/components/Hero";
 import CarGallery from "@/components/CarGallery";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { vehicles } from "@/data/vehicles";
-import { pdfLinks } from "@/data/pdfLinks";
-// QRCode will be dynamically imported
 
 const Index = () => {
-  const [showQr, setShowQr] = useState(false);
-  const [qrCodes, setQrCodes] = useState<Record<string, string>>({});
 
   useEffect(() => {
     // Restore scroll position when returning from vehicle detail
@@ -23,25 +17,9 @@ const Index = () => {
     }
   }, []);
 
-  const generateQrCodes = async () => {
-    // Dynamically import QRCode only when needed
-    const { default: QRCode } = await import('qrcode');
 
-    const codes: Record<string, string> = {};
-    for (const vehicle of vehicles) {
-      const link = pdfLinks[vehicle.id];
-      if (link) {
-        codes[vehicle.id] = await QRCode.toDataURL(link, { width: 128 });
-      }
-    }
-    setQrCodes(codes);
-  };
 
-  useEffect(() => {
-    if (showQr && Object.keys(qrCodes).length === 0) {
-      generateQrCodes();
-    }
-  }, [showQr]);
+
 
   return (
     <div className="min-h-screen">

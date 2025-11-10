@@ -31,7 +31,7 @@ export interface PdfGenerationResult {
  * @returns Promise resolving to PDF blob URL and QR code URL
  */
 export async function generateVehiclePdf({
-  vehicle,
+  vehicle: _vehicle,
   specsElement,
   pdfLinks = {},
   vehicleId
@@ -80,7 +80,7 @@ export async function generateVehiclePdf({
 
   // Generate QR from pdfLinks if available, else blob
   const qrLink = vehicleId ? pdfLinks[vehicleId] || blobUrl : blobUrl;
-  const qrDataUrl = await QRCode.toDataURL(qrLink, { width: 128 });
+  const qrDataUrl = await QRCode.toDataURL(qrLink, { width: 141 });
 
   return {
     pdfBlobUrl: blobUrl,

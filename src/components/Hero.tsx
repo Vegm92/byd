@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroBg from "../assets/images/hero-bg.png";
+import heroBg from "../assets/images/hero-bg.webp";
 
 const Hero = () => {
   const scrollToGallery = () => {

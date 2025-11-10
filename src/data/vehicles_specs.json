@@ -19,8 +19,8 @@
       "transmission": "Automatic"
     },
     "battery_charging": {
-      "battery_type": "BYD Blade Battery (LFP)",
-      "battery_capacity_kwh": 12.96,
+      "battery_type": "48V lithium-ion",
+      "battery_capacity_kwh": 0.048,
       "usable_capacity_kwh": null,
       "onboard_charger_ac_kw": null,
       "max_ac_kw": null,
@@ -640,6 +640,7 @@
     },
     "notes": "Specs from auto-data and other sources for VW T-Roc 1.5 TSI.",
     "sources": ["61340721743940"]
+    "sources": []
   },
   {
     "make": "Volkswagen",
@@ -792,11 +793,11 @@
         "weighted_combined": null
       },
       "co2_g_km": null,
-      "emission_standard": null
+      "emission_standard": "Euro 6e"
     },
     "performance": {
-      "zero_to_100_kmh_s": null,
-      "top_speed_kmh": null,
+      "zero_to_100_kmh_s": 8.9,
+      "top_speed_kmh": 212,
       "drag_coefficient_cd": null
     },
     "dimensions": {

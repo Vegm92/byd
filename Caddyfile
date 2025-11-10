@@ -1,0 +1,7 @@
+:8080 {
+    root * dist
+    file_server
+    header Cache-Control no-cache
+    header Pragma no-cache
+    header Expires 0
+}

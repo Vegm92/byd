@@ -11,7 +11,7 @@ export interface ToastProps {
 
 export type ToastActionElement = React.ReactElement
 
-export const Toast = ({ ...props }: ToastProps) => {
+export const Toast = (_props: ToastProps) => {
   return null
 }
 

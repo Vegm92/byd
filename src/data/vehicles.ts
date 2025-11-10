@@ -68,7 +68,7 @@ const formatAcceleration = (
 // Helper function to format consumption
 const formatConsumption = (
   consumption:
-    | { combined?: number; weighted_combined?: number }
+    | { low?: number | null; medium?: number | null; high?: number | null; combined?: number | null; weighted_combined?: number | null }
     | number
     | null
     | undefined
@@ -110,7 +110,7 @@ const generateId = (spec: VehicleSpec): string => {
   if (spec.make === "MG" && spec.model === "ZS Hybrid+") return "mg-zs-hybrid";
   if (spec.make === "Peugeot" && spec.model === "2008 Hybrid")
     return "peugeot-2008-hybrid";
-  if (spec.make === "Volkswagen" && spec.model === "T-Roc") return "vw-troc";
+  if (spec.make === "Volkswagen" && spec.model === "T-Roc II") return "vw-troc";
   if (spec.make === "Volkswagen" && spec.model === "Tiguan") return "vw-tiguan";
   if (spec.make === "MG" && spec.model === "HS PHEV") return "mg-hs-phev";
   if (spec.make === "Hyundai" && spec.model === "Tucson N Line")
