@@ -2,6 +2,17 @@
 
 Interactive presentation application for BYD ATTO 2 DM-i Europe Sales Training in Barcelona 2025.
 
+## Objective
+
+The primary objective of this project was to provide a high-end, interactive tool for sales teams to present the features and technical specifications of the BYD ATTO 2 DM-i during the European launch event.
+
+## Why we built it
+
+- **Interactivity**: Standard slide decks were too static for the level of engagement required for this launch.
+- **Brand Consistency**: To ensure every sales trainer had access to a tool that strictly followed BYD's brand guidelines (colors, typography, and motion).
+- **Efficiency**: A unified, web-based tool allowed for instant updates across all presentation devices at the event.
+
+
 ## Features
 
 - **Full-screen presentation mode** (1920x1080px optimized)
