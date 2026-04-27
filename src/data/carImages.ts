@@ -52,4 +52,13 @@ export const imageMap: Record<string, { image: string; imageDetail: string }> = 
   },
 };
 
-export const getCarImage = (id: string) => imageMap[id];
+const BASE = import.meta.env.BASE_URL;
+
+export const getCarImage = (id: string) => {
+  const entry = imageMap[id];
+  if (!entry) return undefined;
+  return {
+    image: BASE + entry.image.slice(1),
+    imageDetail: BASE + entry.imageDetail.slice(1),
+  };
+};

@@ -9,14 +9,15 @@ const Presentation = () => {
   const swiperRef = useRef<any>(null);
 
   // Slides data - using the BYD-convoy-presentation images
+  const base = import.meta.env.BASE_URL;
   const slides = [
-    "/images/byd-convoy-presentation/Diapositiva1.PNG",
-    "/images/byd-convoy-presentation/Diapositiva2.PNG",
-    "/images/byd-convoy-presentation/Diapositiva3.PNG",
-    "/images/byd-convoy-presentation/Diapositiva4.PNG",
-    "/images/byd-convoy-presentation/Diapositiva5.PNG",
-    "/images/byd-convoy-presentation/Diapositiva6.PNG",
-    "/images/byd-convoy-presentation/Diapositiva7.PNG",
+    `${base}images/byd-convoy-presentation/Diapositiva1.PNG`,
+    `${base}images/byd-convoy-presentation/Diapositiva2.PNG`,
+    `${base}images/byd-convoy-presentation/Diapositiva3.PNG`,
+    `${base}images/byd-convoy-presentation/Diapositiva4.PNG`,
+    `${base}images/byd-convoy-presentation/Diapositiva5.PNG`,
+    `${base}images/byd-convoy-presentation/Diapositiva6.PNG`,
+    `${base}images/byd-convoy-presentation/Diapositiva7.PNG`,
   ];
 
   useEffect(() => {
