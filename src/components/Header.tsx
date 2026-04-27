@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import ViewModeSelector from "./ViewModeSelector";
 import logo from "../assets/images/byd-logo.svg";
@@ -7,7 +7,7 @@ import logo from "../assets/images/byd-logo.svg";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-
+  const navigate = useNavigate();
 
   const menuItems = [
     { label: "Home", path: "/" },
@@ -17,7 +17,7 @@ const Header = () => {
 
   const scrollToTop = () => {
     if (location.pathname !== "/") {
-      window.location.href = "/";
+      navigate("/");
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -26,7 +26,8 @@ const Header = () => {
 
   const scrollToGallery = () => {
     if (location.pathname !== "/") {
-      window.location.href = "/#vehicle-gallery";
+      navigate("/");
+      setTimeout(() => document.getElementById("vehicle-gallery")?.scrollIntoView({ behavior: "smooth" }), 100);
     } else {
       document
         .getElementById("vehicle-gallery")
