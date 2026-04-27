@@ -51,6 +51,9 @@ const VehicleDetail = () => {
         spec.model === "T-Roc II" &&
         id === "vw-troc") ||
       (spec.make === "Volkswagen" &&
+        spec.model === "T-Roc" &&
+        id === "vw-troc-ice") ||
+      (spec.make === "Volkswagen" &&
         spec.model === "Tiguan" &&
         id === "vw-tiguan") ||
       (spec.make === "MG" && spec.model === "HS PHEV" && id === "mg-hs-phev") ||

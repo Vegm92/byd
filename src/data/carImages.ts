@@ -27,6 +27,10 @@ export const imageMap: Record<string, { image: string; imageDetail: string }> = 
      image: "/car-images/competitors/volkswagen_T-roc.webp",
      imageDetail: "/car-images/competitors/volkswagen_T-roc.webp",
    },
+   "vw-troc-ice": {
+     image: "/car-images/competitors/volkswagen_T-roc.webp",
+     imageDetail: "/car-images/competitors/volkswagen_T-roc.webp",
+   },
   "vw-tiguan": {
     image:
       "/car-images/competitors/volkswagen_25tiguanrlinesu3bfr_lowaggressive.webp",
